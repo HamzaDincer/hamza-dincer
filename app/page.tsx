@@ -5,6 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ParticlesBackground from "./particles";
+import { Typewriter } from "react-simple-typewriter";
 
 export default function Home() {
   const [userInput, setUserInput] = useState("");
@@ -12,9 +13,30 @@ export default function Home() {
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-black text-white p-8 overflow-hidden">
       <ParticlesBackground />
+      {/* Headshot Image */}
+      <div className="mb-4">
+        <Image
+          src="/headshot.jpg" // Make sure to replace with your actual image name
+          alt="Hamza's Headshot"
+          width={170}
+          height={170}
+          className="rounded-full border-4 border-white shadow-lg"
+        />
+      </div>
+      {/* Typing Animation Heading */}
       <h1 className="text-3xl font-semibold mb-8 text-center">
-        Hi, I am Hamza, a Software Developer. What would you like to learn about
-        me?
+        <Typewriter
+          words={[
+            "Hi, I am Hamza, a Software Developer.",
+            "What would you like to learn about me?",
+          ]}
+          loop={1} // Set to 0 for infinite loop
+          cursor
+          cursorStyle="|"
+          typeSpeed={75}
+          deleteSpeed={50}
+          delaySpeed={1000}
+        />
       </h1>
 
       {/* Input Form */}
@@ -31,7 +53,7 @@ export default function Home() {
             type="text"
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
-            placeholder="Ask Me Anything About Me"
+            placeholder="Ask Me Anything About Me..."
             className="flex-grow bg-transparent text-white placeholder-white focus:outline-none"
           />
           <button
