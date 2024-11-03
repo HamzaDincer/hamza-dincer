@@ -7,47 +7,117 @@ import Link from "next/link";
 import ParticlesBackground from "./particles";
 import { Typewriter } from "react-simple-typewriter";
 
+type Message = {
+  sender: "user" | "bot";
+  text: string;
+};
+
 export default function Home() {
   const [userInput, setUserInput] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isChatActive, setIsChatActive] = useState(false);
+
+  const handleUserInput = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userInput.trim()) return;
+
+    // Activate chat on first input submission
+    if (!isChatActive) setIsChatActive(true);
+
+    // Add user's message to messages
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { sender: "user", text: userInput },
+    ]);
+
+    // Clear input field
+    setUserInput("");
+
+    // Simulate bot response after a short delay
+    setTimeout(() => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: "bot", text: "This is a placeholder response from the me." },
+      ]);
+    }, 1000);
+  };
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen bg-black text-white p-8 overflow-hidden">
+    <div className="relative flex flex-col items-center justify-center h-dvh bg-black text-white p-8 overflow-hidden">
       <ParticlesBackground />
-      {/* Headshot Image */}
-      <div className="mb-4">
-        <Image
-          src="/headshot.jpg" // Make sure to replace with your actual image name
-          alt="Hamza's Headshot"
-          width={170}
-          height={170}
-          className="rounded-full border-4 border-white shadow-lg"
-        />
-      </div>
-      {/* Typing Animation Heading */}
-      <h1 className="text-3xl font-semibold mb-8 text-center">
-        <Typewriter
-          words={[
-            "Hi, I am Hamza, a Software Developer.",
-            "What would you like to learn about me?",
-          ]}
-          loop={1} // Set to 0 for infinite loop
-          cursor
-          cursorStyle="|"
-          typeSpeed={75}
-          deleteSpeed={50}
-          delaySpeed={1000}
-        />
-      </h1>
+
+      {/* Conditional Display for Headshot Image and Intro Text */}
+      {!isChatActive && (
+        <>
+          {/* Headshot Image */}
+          <div className="mb-4 relative z-10">
+            <Image
+              src="/headshot.jpg" // Replace with your actual image
+              alt="Hamza's Headshot"
+              width={170}
+              height={170}
+              className="rounded-full border-4 border-white shadow-lg bg-transparent"
+            />
+          </div>
+
+          {/* Typing Animation Heading */}
+          <h1 className="text-3xl font-semibold mb-8 text-center">
+            <Typewriter
+              words={[
+                "Hi, I am Hamza, a Software Developer.",
+                "What would you like to learn about me?",
+              ]}
+              loop={1} // Set to 0 for infinite loop
+              cursor
+              cursorStyle="|"
+              typeSpeed={75}
+              deleteSpeed={50}
+              delaySpeed={1000}
+            />
+          </h1>
+        </>
+      )}
+
+      {/* Chatbox */}
+      {isChatActive && (
+        <div className="relative w-full max-w-4xl h-full p-4 mb-4 bg-zinc-800 rounded-xl shadow-lg overflow-y-auto">
+          {/* Messages */}
+          {messages.map((msg, index) => (
+            <div
+              key={index}
+              className={`flex ${
+                msg.sender === "bot" ? "justify-start" : "justify-end"
+              } mb-2 items-center`}
+            >
+              {/* Headshot Icon for Bot Messages */}
+              {msg.sender === "bot" && (
+                <Image
+                  src="/headshot.jpg" // Replace with your actual image
+                  alt="Bot Icon"
+                  width={40}
+                  height={40}
+                  className="rounded-full mr-2"
+                />
+              )}
+              <div
+                className={`px-4 py-2 rounded-lg shadow ${
+                  msg.sender === "bot"
+                    ? "bg-gray-700 text-white"
+                    : "bg-blue-500 text-white"
+                } max-w-[75%]`}
+              >
+                {msg.text}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Input Form */}
-      <div className="relative w-full max-w-lg">
+      <div className="relative w-full max-w-2xl">
         <form
-          onSubmit={(e) => {
-            e.preventDefault(); // Prevent form submission refresh
-            console.log(userInput); // Log or handle the input
-            setUserInput(""); // Clear input after submission
-          }}
-          className="flex items-center bg-gray-800 rounded-full py-3 px-5 shadow-lg"
+          onSubmit={handleUserInput}
+          className="flex items-center bg-zinc-800 rounded-full py-3 px-5 shadow-lg"
         >
           <input
             type="text"
@@ -58,7 +128,7 @@ export default function Home() {
           />
           <button
             type="submit"
-            className="ml-4 p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition duration-200"
+            className="ml-4 p-2 rounded-full bg-blue-500 hover:bg-blue-600 transition duration-200"
           >
             <Image
               src="/send-icon.svg"
