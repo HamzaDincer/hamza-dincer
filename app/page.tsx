@@ -1,117 +1,17 @@
 "use client";
 
 import { Analytics } from "@vercel/analytics/react";
-import { useMemo, useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Particles, { initParticlesEngine } from "@tsparticles/react";
-import {
-  type Container,
-  type ISourceOptions,
-  MoveDirection,
-  OutMode,
-} from "@tsparticles/engine";
-import { loadSlim } from "@tsparticles/slim";
+import ParticlesBackground from "./particles";
 
 export default function Home() {
   const [userInput, setUserInput] = useState("");
-  const [init, setInit] = useState(false);
-
-  useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => {
-      setInit(true);
-    });
-  }, []);
-
-  const particlesLoaded = async (container?: Container): Promise<void> => {
-    console.log(container);
-  };
-
-  const options: ISourceOptions = useMemo(
-    () => ({
-      background: {
-        color: {
-          value: "black",
-        },
-      },
-      fpsLimit: 120,
-      interactivity: {
-        events: {
-          onClick: {
-            enable: true,
-            mode: "push",
-          },
-          onHover: {
-            enable: true,
-            mode: "repulse",
-          },
-        },
-        modes: {
-          push: {
-            quantity: 4,
-          },
-          repulse: {
-            distance: 200,
-            duration: 0.4,
-          },
-        },
-      },
-      particles: {
-        color: {
-          value: "#ffffff",
-        },
-        links: {
-          color: "#ffffff",
-          distance: 150,
-          enable: true,
-          opacity: 0.5,
-          width: 1,
-        },
-        move: {
-          direction: MoveDirection.none,
-          enable: true,
-          outModes: {
-            default: OutMode.out,
-          },
-          random: false,
-          speed: 3,
-          straight: false,
-        },
-        number: {
-          density: {
-            enable: true,
-          },
-          value: 80,
-        },
-        opacity: {
-          value: 0.5,
-        },
-        shape: {
-          type: "circle",
-        },
-        size: {
-          value: { min: 1, max: 5 },
-        },
-      },
-      detectRetina: true,
-    }),
-    [],
-  );
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-black text-white p-8 overflow-hidden">
-      {/* Particle Background */}
-      {init && (
-        <Particles
-          id="tsparticles"
-          particlesLoaded={particlesLoaded}
-          options={options}
-        />
-      )}
-
-      {/* Futuristic Interactive Heading */}
+      <ParticlesBackground />
       <h1 className="text-3xl font-semibold mb-8 text-center">
         Hi, I am Hamza, a Software Developer. What would you like to learn about
         me?
@@ -119,7 +19,14 @@ export default function Home() {
 
       {/* Input Form */}
       <div className="relative w-full max-w-lg">
-        <form className="flex items-center bg-gray-800 rounded-full py-3 px-5 shadow-lg">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault(); // Prevent form submission refresh
+            console.log(userInput); // Log or handle the input
+            setUserInput(""); // Clear input after submission
+          }}
+          className="flex items-center bg-gray-800 rounded-full py-3 px-5 shadow-lg"
+        >
           <input
             type="text"
             value={userInput}
