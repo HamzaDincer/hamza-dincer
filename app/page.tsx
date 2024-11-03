@@ -17,29 +17,46 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isChatActive, setIsChatActive] = useState(false);
 
-  const handleUserInput = (e: React.FormEvent) => {
+  const handleUserInput = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userInput.trim()) return;
 
     // Activate chat on first input submission
     if (!isChatActive) setIsChatActive(true);
 
-    // Add user's message to messages
+    // Display user's message
     setMessages((prevMessages) => [
       ...prevMessages,
       { sender: "user", text: userInput },
     ]);
 
-    // Clear input field
-    setUserInput("");
+    // Send user input to the API
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userInput }),
+      });
 
-    // Simulate bot response after a short delay
-    setTimeout(() => {
+      const data = await response.json();
+
+      // Display bot's response
       setMessages((prevMessages) => [
         ...prevMessages,
-        { sender: "bot", text: "This is a placeholder response from the me." },
+        { sender: "bot", text: data.reply },
       ]);
-    }, 1000);
+    } catch (error) {
+      console.error("Error fetching response:", error);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: "bot", text: "An error occurred. Please try again." },
+      ]);
+    }
+
+    // Clear user input
+    setUserInput("");
   };
 
   return (
