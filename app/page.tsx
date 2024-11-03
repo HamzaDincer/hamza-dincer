@@ -1,100 +1,203 @@
+"use client";
+
+import { useMemo, useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import Particles, { initParticlesEngine } from "@tsparticles/react";
+import {
+  type Container,
+  type ISourceOptions,
+  MoveDirection,
+  OutMode,
+} from "@tsparticles/engine";
+import { loadSlim } from "@tsparticles/slim";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [userInput, setUserInput] = useState("");
+  const [init, setInit] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  useEffect(() => {
+    initParticlesEngine(async (engine) => {
+      await loadSlim(engine);
+    }).then(() => {
+      setInit(true);
+    });
+  }, []);
+
+  const particlesLoaded = async (container?: Container): Promise<void> => {
+    console.log(container);
+  };
+
+  const options: ISourceOptions = useMemo(
+    () => ({
+      background: {
+        color: {
+          value: "black",
+        },
+      },
+      fpsLimit: 120,
+      interactivity: {
+        events: {
+          onClick: {
+            enable: true,
+            mode: "push",
+          },
+          onHover: {
+            enable: true,
+            mode: "repulse",
+          },
+        },
+        modes: {
+          push: {
+            quantity: 4,
+          },
+          repulse: {
+            distance: 200,
+            duration: 0.4,
+          },
+        },
+      },
+      particles: {
+        color: {
+          value: "#ffffff",
+        },
+        links: {
+          color: "#ffffff",
+          distance: 150,
+          enable: true,
+          opacity: 0.5,
+          width: 1,
+        },
+        move: {
+          direction: MoveDirection.none,
+          enable: true,
+          outModes: {
+            default: OutMode.out,
+          },
+          random: false,
+          speed: 6,
+          straight: false,
+        },
+        number: {
+          density: {
+            enable: true,
+          },
+          value: 80,
+        },
+        opacity: {
+          value: 0.5,
+        },
+        shape: {
+          type: "circle",
+        },
+        size: {
+          value: { min: 1, max: 5 },
+        },
+      },
+      detectRetina: true,
+    }),
+    [],
+  );
+
+  return (
+    <div className="relative flex flex-col items-center justify-center min-h-screen bg-black text-white p-8 overflow-hidden">
+      {/* Particle Background */}
+      {init && (
+        <Particles
+          id="tsparticles"
+          particlesLoaded={particlesLoaded}
+          options={options}
+        />
+      )}
+
+      {/* Futuristic Interactive Heading */}
+      <h1 className="text-3xl font-semibold mb-8 text-center">
+        Hi, I am Hamza, a Software Developer. What would you like to learn about
+        me?
+      </h1>
+
+      {/* Input Form */}
+      <div className="relative w-full max-w-lg">
+        <form className="flex items-center bg-gray-800 rounded-full py-3 px-5 shadow-lg">
+          <input
+            type="text"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            placeholder="Ask Me Anything About Me"
+            className="flex-grow bg-transparent text-white placeholder-white focus:outline-none"
+          />
+          <button
+            type="submit"
+            className="ml-4 p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition duration-200"
           >
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
+              src="/send-icon.svg"
+              alt="Send Icon"
               width={20}
               height={20}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          </button>
+        </form>
+      </div>
+
+      {/* Footer Links */}
+      <footer className="mt-12 flex gap-6 flex-wrap items-center justify-center">
+        <Link href="/projects">
+          <span className="flex items-center gap-2 hover:underline hover:underline-offset-4 cursor-pointer">
+            <Image
+              aria-hidden
+              src="/portfolio-icon.svg"
+              alt="Portfolio icon"
+              width={24}
+              height={24}
+            />
+            My Projects
+          </span>
+        </Link>
+        <Link href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+          <span className="flex items-center gap-2 hover:underline hover:underline-offset-4 cursor-pointer">
+            <Image
+              aria-hidden
+              src="/download-icon.svg"
+              alt="Download icon"
+              width={20}
+              height={20}
+            />
+            Resume
+          </span>
+        </Link>
+        <Link
+          href="https://github.com/HamzaDincer"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          <span className="flex items-center gap-2 hover:underline hover:underline-offset-4 cursor-pointer">
+            <Image
+              aria-hidden
+              src="/github-icon.svg"
+              alt="GitHub icon"
+              width={20}
+              height={20}
+            />
+            GitHub
+          </span>
+        </Link>
+        <Link
+          href="https://linkedin.com/in/hamza-dincer"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+          <span className="flex items-center gap-2 hover:underline hover:underline-offset-4 cursor-pointer">
+            <Image
+              aria-hidden
+              src="/linkedin-icon.svg"
+              alt="LinkedIn icon"
+              width={20}
+              height={20}
+            />
+            LinkedIn
+          </span>
+        </Link>
       </footer>
     </div>
   );
