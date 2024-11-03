@@ -1,5 +1,6 @@
 "use client";
 
+import { Analytics } from "@vercel/analytics/react";
 import { useMemo, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -75,7 +76,7 @@ export default function Home() {
             default: OutMode.out,
           },
           random: false,
-          speed: 6,
+          speed: 3,
           straight: false,
         },
         number: {
@@ -138,6 +139,7 @@ export default function Home() {
             />
           </button>
         </form>
+        <Analytics />
       </div>
 
       {/* Footer Links */}
