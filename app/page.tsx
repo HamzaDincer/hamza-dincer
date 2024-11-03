@@ -19,18 +19,15 @@ export default function Home() {
 
   const handleUserInput = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!userInput.trim()) return;
 
-    // Activate chat on first input submission
     if (!isChatActive) setIsChatActive(true);
-
-    // Display user's message
     setMessages((prevMessages) => [
       ...prevMessages,
       { sender: "user", text: userInput },
     ]);
-
-    // Send user input to the API
+    setUserInput("");
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -54,22 +51,18 @@ export default function Home() {
         { sender: "bot", text: "An error occurred. Please try again." },
       ]);
     }
-
-    // Clear user input
-    setUserInput("");
   };
 
   return (
     <div className="relative flex flex-col items-center justify-center h-dvh bg-black text-white p-8 overflow-hidden">
       <ParticlesBackground />
 
-      {/* Conditional Display for Headshot Image and Intro Text */}
       {!isChatActive && (
         <>
           {/* Headshot Image */}
           <div className="mb-4 relative z-10">
             <Image
-              src="/headshot.jpg" // Replace with your actual image
+              src="/headshot.jpg"
               alt="Hamza's Headshot"
               width={170}
               height={170}
@@ -82,12 +75,12 @@ export default function Home() {
             <Typewriter
               words={[
                 "Hi, I am Hamza, a Software Developer.",
-                "What would you like to learn about me?",
+                "Would you like to chat?",
               ]}
-              loop={1} // Set to 0 for infinite loop
+              loop={1}
               cursor
               cursorStyle="|"
-              typeSpeed={75}
+              typeSpeed={60}
               deleteSpeed={50}
               delaySpeed={1000}
             />
@@ -97,7 +90,7 @@ export default function Home() {
 
       {/* Chatbox */}
       {isChatActive && (
-        <div className="relative w-full max-w-4xl h-full p-4 mb-4 bg-zinc-800 rounded-xl shadow-lg overflow-y-auto">
+        <div className="relative w-full max-w-4xl h-full p-4 mb-4 bg-black-800 rounded-xl shadow-lg overflow-y-auto">
           {/* Messages */}
           {messages.map((msg, index) => (
             <div
@@ -160,7 +153,7 @@ export default function Home() {
 
       {/* Footer Links */}
       <footer className="mt-12 flex gap-6 flex-wrap items-center justify-center">
-        <Link href="/projects">
+        {/* <Link href="/projects">
           <span className="flex items-center gap-2 hover:underline hover:underline-offset-4 cursor-pointer">
             <Image
               aria-hidden
@@ -171,7 +164,7 @@ export default function Home() {
             />
             My Projects
           </span>
-        </Link>
+        </Link> */}
         <Link href="/resume.pdf" target="_blank" rel="noopener noreferrer">
           <span className="flex items-center gap-2 hover:underline hover:underline-offset-4 cursor-pointer">
             <Image
